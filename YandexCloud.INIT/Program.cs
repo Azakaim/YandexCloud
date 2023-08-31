@@ -6,10 +6,13 @@ using YandexCloud.CORE;
 
 StandardKernel standartKernel = new StandardKernel();
 
-standartKernel.Load(Assembly.GetExecutingAssembly());
+//standartKernel.Load(Assembly.GetExecutingAssembly());
+//IDB idb = standartKernel.Get<DB>();
+//var base_cl = new BL(idb);
+//base_cl.BasisLogik();
 
-IDB idb = standartKernel.Get<DB>();
+standartKernel.Bind<IBL>().To<BL>().InTransientScope();
+standartKernel.Bind<IDB>().To<DB>().InTransientScope();
 
-var base_cl = new BL(idb);
-
-base_cl.BasisLogik();
+var baseCl = standartKernel.Get<IBL>();
+baseCl.BasisLogik();

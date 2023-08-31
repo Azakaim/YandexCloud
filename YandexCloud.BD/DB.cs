@@ -6,20 +6,20 @@ namespace YandexCloud.BD
 {
     public class DB : IDB
     {
-        string Host;
+        string Host = "someHost";
         string Port = "6432";
-        string NameDB;
-        string UserName;
-        string Password;
+        string NameDB = "someName";
+        string UserName = "piu";
+        string Password = "password";
         NpgsqlConnection conn;
 
-        public DB(string host, string port, string name_DB, string user_Name, string password)
+        public DB(/*string host, string port, string name_DB, string user_Name, string password*/)
         {
-            Host = host;
-            Port = port;
-            NameDB = name_DB;
-            UserName = user_Name;
-            Password = password;
+            //Host = host;
+            //Port = port;
+            //NameDB = name_DB;
+            //UserName = user_Name;
+            //Password = password;
             ConnectDB();
             ReaderDB().Wait();
         }

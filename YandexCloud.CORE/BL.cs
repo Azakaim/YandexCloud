@@ -2,7 +2,7 @@
 
 namespace YandexCloud.CORE
 {
-    public class BL
+    public class BL : IBL
     {
         IDB _dataBase;
 
