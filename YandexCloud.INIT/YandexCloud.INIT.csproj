@@ -8,12 +8,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ninject" Version="3.3.6" />
+	<Content Include="appsettings.json">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\YandexCloud.BD\YandexCloud.BD.csproj" />
     <ProjectReference Include="..\YandexCloud.CORE\YandexCloud.CORE.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

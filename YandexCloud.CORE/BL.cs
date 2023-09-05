@@ -14,7 +14,6 @@ namespace YandexCloud.CORE
         public void BasisLogik()
         {
             _dataBase.ConnectDB();
-            _dataBase.ReaderDB();
         }
     }
 }

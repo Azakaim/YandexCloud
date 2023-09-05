@@ -1,18 +1,15 @@
-﻿// See https://aka.ms/new-console-template for more information
-using Ninject;
-using System.Reflection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using YandexCloud.BD;
 using YandexCloud.CORE;
 
-StandardKernel standartKernel = new StandardKernel();
+var builder = Host.CreateApplicationBuilder();
+builder.Services.AddTransient<IBL, BL>();
+builder.Services.AddTransient<IDB, DB>();
+builder.Services.AddHttpClient();
+using IHost host = builder.Build();
 
-//standartKernel.Load(Assembly.GetExecutingAssembly());
-//IDB idb = standartKernel.Get<DB>();
-//var base_cl = new BL(idb);
-//base_cl.BasisLogik();
-
-standartKernel.Bind<IBL>().To<BL>().InTransientScope();
-standartKernel.Bind<IDB>().To<DB>().InTransientScope();
-
-var baseCl = standartKernel.Get<IBL>();
+var baseCl = host.Services.GetService<IBL>();
 baseCl.BasisLogik();
+
+await host.RunAsync();
