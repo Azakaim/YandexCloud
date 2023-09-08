@@ -1,4 +1,6 @@
-﻿using Npgsql;
+﻿using Dapper;
+using Npgsql;
+using YandexCloud.CORE.DTOs;
 
 namespace YandexCloud.BD.Postgres
 {
@@ -11,9 +13,11 @@ namespace YandexCloud.BD.Postgres
             _connection = connection;
         }
 
-        public async Task CreateAsync()
+        public async Task CreateAsync(IEnumerable<OzonDataDto> data)
         {
-
+            var sql = "insert into first_table (date, sku, name, posting_number, accruals_for_sale, sale_comission) " +
+                "values (@data)";
+            await _connection.ExecuteAsync(sql, data);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace YandexCloud.BD.Postgres
         public async Task<int> CreateAsync(OzonDataDto ozonDataDto)
         {
             var sql = "insert into ozon_stores (store) value (@store) returning 1";
-            return await _connection.QueryFirstAsync<int>(sql, new { store = ozonDataDto.Store });
+            return await _connection.QueryFirstAsync<int>(sql, new { store = ozonDataDto });
         }
     }
 }

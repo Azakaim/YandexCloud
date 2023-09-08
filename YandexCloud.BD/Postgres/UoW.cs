@@ -24,7 +24,8 @@ namespace YandexCloud.BD.Postgres
 
         public async Task OpenTransactionAsync()
         {
-            _connection = new NpgsqlConnection(_configuration["YandexDBConnectionString"]);
+            var connString = _configuration["YandexDBConnectionString"];
+            _connection = new NpgsqlConnection(connString);
             
             await _connection.OpenAsync();
             _transaction = await _connection.BeginTransactionAsync();
@@ -42,8 +43,8 @@ namespace YandexCloud.BD.Postgres
 
         public void Dispose()
         {
-            if (_connection.State != ConnectionState.Open) 
-                _connection.Close();
+            if (_connection?.State != ConnectionState.Open) 
+                _connection?.Close();
             
             _transaction?.Dispose();
             _connection?.Dispose();

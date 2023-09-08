@@ -4,6 +4,6 @@ namespace YandexCloud.CORE.Repositories
 {
     public interface IOzonFullData
     {
-        Task<OzonDataDto> GetOzonDataAsync();
+        Task<OzonResponseModel> GetDeliveryDataAsync();
     }
 }
