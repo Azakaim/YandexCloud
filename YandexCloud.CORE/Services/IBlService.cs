@@ -1,7 +1,9 @@
-﻿namespace YandexCloud.CORE.Services
+﻿using YandexCloud.CORE.DTOs;
+
+namespace YandexCloud.CORE.Services
 {
     public interface IBlService
     {
-        Task GetDataAsync();
+        Task GetDataAsync(RequestDataDto requestModel);
     }
 }

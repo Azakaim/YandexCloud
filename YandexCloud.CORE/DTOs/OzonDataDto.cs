@@ -7,7 +7,7 @@
         public string sku { get; set; }
         public string name { get; set; }
         public string posting_number { get; set; }
-        public decimal accruals_for_sale { get; set; }
+        public decimal? accruals_for_sale { get; set; }
         public decimal sale_comission { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using YandexCloud.BD.Models;
 using YandexCloud.CORE.DTOs;
+using YandexCloud.CORE.Models;
 using YandexCloud.CORE.Repositories;
 
 namespace YandexCloud.BD.Ozon
@@ -16,15 +17,15 @@ namespace YandexCloud.BD.Ozon
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<OzonResponseModel> GetDeliveryDataAsync()
+        public async Task<OzonResponseModel> GetDeliveryDataAsync(RequestDataModel requestModel)
         {
             var httpClient = _httpClientFactory.CreateClient();
             var url = "https://api-seller.ozon.ru/v3/finance/transaction/list";
 
             var date = new Date
             {
-                from = DateTime.SpecifyKind(new DateTime(2023, 6, 1), DateTimeKind.Utc),
-                to = DateTime.SpecifyKind(new DateTime(2023, 6, 30), DateTimeKind.Utc),
+                from = requestModel.From,
+                to = requestModel.To,
             };
 
             var filter = new Filter
@@ -38,12 +39,12 @@ namespace YandexCloud.BD.Ozon
             var transactionListModel = new TransactionListModel
             {
                 filter = filter,
-                page = 1,
+                page = requestModel.Page,
                 page_size = 1000,
             };
 
-            httpClient.DefaultRequestHeaders.Add("Client-Id", "129047");
-            httpClient.DefaultRequestHeaders.Add("Api-Key", "06ef9d66-b383-4498-b75d-b5df7df4ce19");
+            httpClient.DefaultRequestHeaders.Add("Client-Id", requestModel.ClientId);
+            httpClient.DefaultRequestHeaders.Add("Api-Key", requestModel.ApiKey);
 
             using var content = new StringContent(JsonSerializer.Serialize(transactionListModel), Encoding.UTF8, "application/json");
             var responce = await httpClient.PostAsync(url, content);

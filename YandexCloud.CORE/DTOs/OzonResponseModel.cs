@@ -20,7 +20,7 @@
         public string operation_type_name { get; set; }
         public int delivery_charge { get; set; }
         public int return_delivery_charge { get; set; }
-        public int accruals_for_sale { get; set; }
+        public decimal? accruals_for_sale { get; set; }
         public decimal sale_commission { get; set; }
         public decimal amount { get; set; }
         public string type { get; set; }
