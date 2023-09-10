@@ -3,9 +3,9 @@ using System.Text.RegularExpressions;
 
 namespace YandexCloud.INIT.Infrastructure
 {
-    public static class ConsoleReaderExtension
+    public class ConsoleReader : IConsoleReader
     {
-        public static DateTime ReadDateTime(this string request, string message)
+        public DateTime ReadDateTime(string message)
         {
             DateTime result;
             bool isMatch;
@@ -31,7 +31,7 @@ namespace YandexCloud.INIT.Infrastructure
             return result;
         }
 
-        public static string ReadString(this string request, string message)
+        public string ReadString(string message)
         {
             string fromRequest;
 

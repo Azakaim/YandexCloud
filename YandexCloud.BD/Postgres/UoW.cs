@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Npgsql;
 using System.Data;
+using YandexCloud.CORE.DTOs;
 using YandexCloud.CORE.Repositories;
 
 namespace YandexCloud.BD.Postgres
@@ -11,21 +12,27 @@ namespace YandexCloud.BD.Postgres
 
         IOzonMainData _ozonMainData;
         IOzonStores _ozonStores;
+        IOzonSecondDataRepository _ozonSecondDataRepository;
+        IServiceNamesRepository _serviceNamesRepository;
+
         NpgsqlConnection _connection;
         NpgsqlTransaction _transaction;
 
         public UoW(IConfiguration configuration)
         {
             _configuration = configuration;
+            var connString = _configuration["YandexDBConnectionString"];
+            _connection = new NpgsqlConnection(connString);
         }
 
         public IOzonMainData OzonMainDataRepository => _ozonMainData ??= new PostgresOzonMainDataRepository(_connection);
         public IOzonStores OzonStoresRepository => _ozonStores ??= new PostgresOzonStoresRepository(_connection);
+        public IOzonSecondDataRepository OzonSecondDataRepository => _ozonSecondDataRepository ??= new OzonSecondDataRepository(_connection);
+        public IServiceNamesRepository OzonServiceNamesRepository => _serviceNamesRepository ??= new PostgresServiceNamesRepository(_connection);
 
         public async Task OpenTransactionAsync()
         {
-            var connString = _configuration["YandexDBConnectionString"];
-            _connection = new NpgsqlConnection(connString);
+
             
             await _connection.OpenAsync();
             _transaction = await _connection.BeginTransactionAsync();

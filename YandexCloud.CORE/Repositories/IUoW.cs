@@ -1,4 +1,5 @@
 ﻿using YandexCloud.BD;
+using YandexCloud.BD.Postgres;
 
 namespace YandexCloud.CORE.Repositories
 {
@@ -6,6 +7,8 @@ namespace YandexCloud.CORE.Repositories
     {
         IOzonMainData OzonMainDataRepository { get; }
         IOzonStores OzonStoresRepository { get; }
+        IOzonSecondDataRepository OzonSecondDataRepository { get; }
+        IServiceNamesRepository OzonServiceNamesRepository { get; }
 
         Task CommitAsync();
         Task OpenTransactionAsync();

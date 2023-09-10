@@ -4,6 +4,6 @@ namespace YandexCloud.BD
 {
     public interface IOzonMainData
     {
-        Task CreateAsync(IEnumerable<OzonDataDto> data);
+        Task CreateAsync(IEnumerable<OzonFirstDataDto> data);
     }
 }

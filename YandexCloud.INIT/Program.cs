@@ -5,12 +5,14 @@ using YandexCloud.BD.Postgres;
 using YandexCloud.CORE.Repositories;
 using YandexCloud.CORE.Services;
 using YandexCloud.INIT;
+using YandexCloud.INIT.Infrastructure;
 
 var builder = Host.CreateApplicationBuilder();
 builder.Services.AddTransient<IBlService, BlService>();
 builder.Services.AddTransient<IOzonFullData, WebOzonData>();
 builder.Services.AddScoped<IUoW, UoW>();
 builder.Services.AddTransient<IRequestReader, RequestReader>();
+builder.Services.AddTransient<IConsoleReader, ConsoleReader>();
 builder.Services.AddHttpClient();
 using IHost host = builder.Build();
 

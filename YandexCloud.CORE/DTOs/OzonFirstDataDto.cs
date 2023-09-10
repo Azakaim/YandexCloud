@@ -1,8 +1,8 @@
 ﻿namespace YandexCloud.CORE.DTOs
 {
-    public class OzonDataDto
+    public class OzonFirstDataDto
     {
-        public int id { get; set; }
+        public string id { get; set; }
         public DateTime date { get; set; }
         public string sku { get; set; }
         public string name { get; set; }

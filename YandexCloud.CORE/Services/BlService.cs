@@ -35,14 +35,19 @@ namespace YandexCloud.CORE.Services
                     ozonData.Add(await _ozonFullData.GetDeliveryDataAsync(requestModel));
                 }
 
-                var ozonDataList = new List<OzonDataDto>();
+                var ozonServiseNames = await _uoW.OzonServiceNamesRepository.GetAsync();
+
+                var ozonFirstDataList = new List<OzonFirstDataDto>();
+                var ozonSecondDataList = new List<OzonSecondDataDto>();
 
                 foreach (var item in ozonData)
                 {
                     foreach (var data in item.result.operations)
                     {
-                        ozonDataList.Add(new OzonDataDto
+                        var id = Guid.NewGuid();
+                        ozonFirstDataList.Add(new OzonFirstDataDto
                         {
+                            id = id.ToString(),
                             date = Convert.ToDateTime(data.operation_date),
                             sku = data.items[0].sku.ToString(),
                             name = data.items[0].name,
@@ -50,15 +55,36 @@ namespace YandexCloud.CORE.Services
                             accruals_for_sale = data.accruals_for_sale.Value,
                             sale_comission = data.sale_commission
                         });
+
+                        var service = ozonServiseNames.FirstOrDefault();
+                        var serviceFromResponse = data.services.FirstOrDefault(n => n.name == service.name);
+
+                        ozonSecondDataList.Add(new OzonSecondDataDto
+                        {
+                            first_table_id = id.ToString(),
+                            price = serviceFromResponse?.price,
+                            ozon_service_names_id = 1
+                        });
+
+                        service = ozonServiseNames.FirstOrDefault(i => i.id == 2);
+                        serviceFromResponse = data.services.FirstOrDefault(n => n.name == service.name);
+
+                        ozonSecondDataList.Add(new OzonSecondDataDto
+                        {
+                            first_table_id = id.ToString(),
+                            price = serviceFromResponse?.price,
+                            ozon_service_names_id = 2
+                        });
                     }
                 }
 
                 await _uoW.OpenTransactionAsync();
-                await _uoW.OzonMainDataRepository.CreateAsync(ozonDataList);
+                await _uoW.OzonMainDataRepository.CreateAsync(ozonFirstDataList);
+                await _uoW.OzonSecondDataRepository.CreateAsync(ozonSecondDataList);
                 await _uoW.CommitAsync();
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 await _uoW.RollbackAsync();
                 throw;

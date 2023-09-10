@@ -46,7 +46,7 @@
     public class Service
     {
         public string name { get; set; }
-        public double price { get; set; }
+        public decimal price { get; set; }
     }
 
 

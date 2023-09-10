@@ -4,6 +4,6 @@ namespace YandexCloud.CORE.Repositories
 {
     public interface IOzonStores
     {
-        Task<int> CreateAsync(OzonDataDto ozonDataDto);
+        Task<int> CreateAsync(OzonFirstDataDto ozonDataDto);
     }
 }
