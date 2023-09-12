@@ -20,6 +20,7 @@ namespace YandexCloud.CORE.Services
         {
             var mapper = new MapperConfiguration(cfg => cfg.CreateMap<RequestDataDto, RequestDataModel>()).CreateMapper();
             var requestModel = mapper.Map<RequestDataDto, RequestDataModel>(requestDto);
+            requestModel.OperationType = "OperationAgentDeliveredToCustomer";
 
             try
             {
@@ -29,60 +30,88 @@ namespace YandexCloud.CORE.Services
 
                 var pageCount = ozonData.First().result.page_count;
 
-                for (int i = 2; i <= pageCount; i++)
-                {
-                    requestModel.Page = i;
-                    ozonData.Add(await _ozonFullData.GetDeliveryDataAsync(requestModel));
-                }
+                //for (int i = 2; i <= pageCount; i++)
+                //{
+                //    requestModel.Page = i;
+                //    ozonData.Add(await _ozonFullData.GetDeliveryDataAsync(requestModel));
+                //}
 
                 var ozonServiseNames = await _uoW.OzonServiceNamesRepository.GetAsync();
 
                 var ozonFirstDataList = new List<OzonFirstDataDto>();
                 var ozonSecondDataList = new List<OzonSecondDataDto>();
 
+                //foreach (var item in ozonData)
+                //{
+                //    foreach (var data in item.result.operations)
+                //    {
+                //        var id = Guid.NewGuid();
+                //        ozonFirstDataList.Add(new OzonFirstDataDto
+                //        {
+                //            id = id.ToString(),
+                //            date = Convert.ToDateTime(data.operation_date),
+                //            sku = data.items[0].sku.ToString(),
+                //            name = data.items[0].name,
+                //            posting_number = data.posting.posting_number,
+                //            accruals_for_sale = data.accruals_for_sale.Value,
+                //            sale_comission = data.sale_commission
+                //        });
+
+                //        var service = ozonServiseNames.FirstOrDefault();
+                //        var serviceFromResponse = data.services.FirstOrDefault(n => n.name == service.name);
+
+                //        ozonSecondDataList.Add(new OzonSecondDataDto
+                //        {
+                //            first_table_id = id.ToString(),
+                //            price = serviceFromResponse?.price,
+                //            ozon_service_names_id = 1
+                //        });
+
+                //        service = ozonServiseNames.FirstOrDefault(i => i.id == 2);
+                //        serviceFromResponse = data.services.FirstOrDefault(n => n.name == service.name);
+
+                //        ozonSecondDataList.Add(new OzonSecondDataDto
+                //        {
+                //            first_table_id = id.ToString(),
+                //            price = serviceFromResponse?.price,
+                //            ozon_service_names_id = 2
+                //        });
+                //    }
+                //}
+
+                await _uoW.OpenTransactionAsync();
+                //await _uoW.OzonMainDataRepository.CreateAsync(ozonFirstDataList);
+                //await _uoW.OzonSecondDataRepository.CreateAsync(ozonSecondDataList);
+
+                requestModel.OperationType = "MarketplaceRedistributionOfAcquiringOperation";
+                requestModel.Page = 1;
+                ozonData.Clear();
+                var ozonAcquiringData = new List<OzonAcquiringDataDto>();
+
+                for (int i = 1; i <= pageCount; i++)
+                {
+                    requestModel.Page = i;
+                    ozonData.Add(await _ozonFullData.GetDeliveryDataAsync(requestModel));
+                }
+
                 foreach (var item in ozonData)
                 {
                     foreach (var data in item.result.operations)
                     {
-                        var id = Guid.NewGuid();
-                        ozonFirstDataList.Add(new OzonFirstDataDto
+                        ozonAcquiringData.Add(new OzonAcquiringDataDto
                         {
-                            id = id.ToString(),
-                            date = Convert.ToDateTime(data.operation_date),
-                            sku = data.items[0].sku.ToString(),
-                            name = data.items[0].name,
+                            sku = data.items.FirstOrDefault().sku.ToString(),
+                            name = data.items.FirstOrDefault().name,
+                            amount = data.amount,
                             posting_number = data.posting.posting_number,
-                            accruals_for_sale = data.accruals_for_sale.Value,
-                            sale_comission = data.sale_commission
-                        });
-
-                        var service = ozonServiseNames.FirstOrDefault();
-                        var serviceFromResponse = data.services.FirstOrDefault(n => n.name == service.name);
-
-                        ozonSecondDataList.Add(new OzonSecondDataDto
-                        {
-                            first_table_id = id.ToString(),
-                            price = serviceFromResponse?.price,
-                            ozon_service_names_id = 1
-                        });
-
-                        service = ozonServiseNames.FirstOrDefault(i => i.id == 2);
-                        serviceFromResponse = data.services.FirstOrDefault(n => n.name == service.name);
-
-                        ozonSecondDataList.Add(new OzonSecondDataDto
-                        {
-                            first_table_id = id.ToString(),
-                            price = serviceFromResponse?.price,
-                            ozon_service_names_id = 2
+                            date = Convert.ToDateTime(data.operation_date),
+                            operation_id = data.operation_id.ToString(),
                         });
                     }
                 }
 
-                await _uoW.OpenTransactionAsync();
-                await _uoW.OzonMainDataRepository.CreateAsync(ozonFirstDataList);
-                await _uoW.OzonSecondDataRepository.CreateAsync(ozonSecondDataList);
+                await _uoW.OzonAcquiringRepository.CreateAsync(ozonAcquiringData);
                 await _uoW.CommitAsync();
-
             }
             catch (Exception ex)
             {

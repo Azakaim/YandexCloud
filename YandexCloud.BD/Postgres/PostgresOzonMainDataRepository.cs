@@ -4,7 +4,7 @@ using YandexCloud.CORE.DTOs;
 
 namespace YandexCloud.BD.Postgres
 {
-    public class PostgresOzonMainDataRepository : IOzonMainData
+    public class PostgresOzonMainDataRepository : IOzonData<IEnumerable<OzonFirstDataDto>>
     {
         NpgsqlConnection _connection;
 

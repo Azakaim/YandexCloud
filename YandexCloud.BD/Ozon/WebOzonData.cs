@@ -31,7 +31,7 @@ namespace YandexCloud.BD.Ozon
             var filter = new Filter
             {
                 date = date,
-                operation_type = new List<string> { "OperationAgentDeliveredToCustomer" },
+                operation_type = new List<string> { requestModel.OperationType },
                 posting_number = "",
                 transaction_type = "all"
             };

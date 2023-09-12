@@ -10,7 +10,8 @@ namespace YandexCloud.BD.Postgres
     {
         readonly IConfiguration _configuration;
 
-        IOzonMainData _ozonMainData;
+        IOzonData<IEnumerable<OzonFirstDataDto>> _ozonMainData;
+        IOzonData<IEnumerable<OzonAcquiringDataDto>> _ozonAcquiringData;
         IOzonStores _ozonStores;
         IOzonSecondDataRepository _ozonSecondDataRepository;
         IServiceNamesRepository _serviceNamesRepository;
@@ -25,10 +26,11 @@ namespace YandexCloud.BD.Postgres
             _connection = new NpgsqlConnection(connString);
         }
 
-        public IOzonMainData OzonMainDataRepository => _ozonMainData ??= new PostgresOzonMainDataRepository(_connection);
+        public IOzonData<IEnumerable<OzonFirstDataDto>> OzonMainDataRepository => _ozonMainData ??= new PostgresOzonMainDataRepository(_connection);
         public IOzonStores OzonStoresRepository => _ozonStores ??= new PostgresOzonStoresRepository(_connection);
         public IOzonSecondDataRepository OzonSecondDataRepository => _ozonSecondDataRepository ??= new OzonSecondDataRepository(_connection);
         public IServiceNamesRepository OzonServiceNamesRepository => _serviceNamesRepository ??= new PostgresServiceNamesRepository(_connection);
+        public IOzonData<IEnumerable<OzonAcquiringDataDto>> OzonAcquiringRepository => _ozonAcquiringData ??= new PostgresOzonAcquiringDataRepository(_connection);
 
         public async Task OpenTransactionAsync()
         {
