@@ -12,6 +12,13 @@ namespace YandexCloud.BD.Postgres
 
         IOzonData<IEnumerable<OzonFirstDataDto>> _ozonMainData;
         IOzonData<IEnumerable<OzonAcquiringDataDto>> _ozonAcquiringData;
+        IOzonData<IEnumerable<OzonMarketingActionCostModel>> _ozonMarketingActionData;
+        IOzonData<IEnumerable<ClientReturnAgentOperationModel>> _clientReturnAgentOperationData;
+        IOzonData<IEnumerable<ReturnAgentOperationRFBSModel>> _returnAgentOperationRFBSData;
+        IOzonData<IEnumerable<OperationReturnGoodsFBSofRMSModel>> _operationReturnGoodsFBSofRMSData;
+        IOzonData<IEnumerable<PriceByReturnGoodsFBSOfRMSModel>> _priceByReturnGoodsFBSOfRMSData;
+        IOzonData<IEnumerable<OperationItemReturnModel>> _operationItemReturnModel;
+        IOzonData<IEnumerable<PriceByOperationItemReturnModel>> _priceByOperationItemReturnData;
         IOzonStores _ozonStores;
         IOzonSecondDataRepository _ozonSecondDataRepository;
         IServiceNamesRepository _serviceNamesRepository;
@@ -31,6 +38,20 @@ namespace YandexCloud.BD.Postgres
         public IOzonSecondDataRepository OzonSecondDataRepository => _ozonSecondDataRepository ??= new OzonSecondDataRepository(_connection);
         public IServiceNamesRepository OzonServiceNamesRepository => _serviceNamesRepository ??= new PostgresServiceNamesRepository(_connection);
         public IOzonData<IEnumerable<OzonAcquiringDataDto>> OzonAcquiringRepository => _ozonAcquiringData ??= new PostgresOzonAcquiringDataRepository(_connection);
+        public IOzonData<IEnumerable<OzonMarketingActionCostModel>> OzonMarketingActionsRepository =>
+            _ozonMarketingActionData ??= new PostgresMarketinActionsRepository(_connection);
+        public IOzonData<IEnumerable<ClientReturnAgentOperationModel>> OzonClientReturnAgentRepository =>
+            _clientReturnAgentOperationData ??= new PostgresClientReturnAgentRepository(_connection);
+        public IOzonData<IEnumerable<ReturnAgentOperationRFBSModel>> OzonReturnAgentOperationRFBSRepository =>
+            _returnAgentOperationRFBSData ??= new PostgresReturnAgentOperationRFBSRepository(_connection);
+        public IOzonData<IEnumerable<OperationReturnGoodsFBSofRMSModel>> OzonOperationReturnGoodsFbsOfRmsRepository =>
+            _operationReturnGoodsFBSofRMSData ??= new PostgresOperationReturnGoodsFbsOfRmsRepository(_connection);
+        public IOzonData<IEnumerable<PriceByReturnGoodsFBSOfRMSModel>> OzonPriceByReturnGoodsFbsOfRmsRepository =>
+            _priceByReturnGoodsFBSOfRMSData ??= new PostgresPriceByReturnGoodsFbsOfRmsRepository(_connection);
+        public IOzonData<IEnumerable<OperationItemReturnModel>> OzonOperationItemReturnRepository =>
+            _operationItemReturnModel ??= new PostgresOperationItemReturnRepository(_connection);
+        public IOzonData<IEnumerable<PriceByOperationItemReturnModel>> OzonPriceByOperationItemReturnRepository =>
+            _priceByOperationItemReturnData ??= new PostgresPriceByOperationItemReturnRepository(_connection);
 
         public async Task OpenTransactionAsync()
         {
