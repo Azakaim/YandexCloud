@@ -4,6 +4,8 @@ namespace YandexCloud.CORE.Services
 {
     public interface IBlService
     {
+        event Action<string> OzonEventHandler;
+
         Task GetDataAsync(RequestDataDto requestModel);
     }
 }

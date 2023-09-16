@@ -19,6 +19,8 @@ namespace YandexCloud.BD.Postgres
         IOzonData<IEnumerable<PriceByReturnGoodsFBSOfRMSModel>> _priceByReturnGoodsFBSOfRMSData;
         IOzonData<IEnumerable<OperationItemReturnModel>> _operationItemReturnModel;
         IOzonData<IEnumerable<PriceByOperationItemReturnModel>> _priceByOperationItemReturnData;
+        IOzonData<IEnumerable<PremiumCashbackIndividualPointsModel>> _premiumCashbackIndividualPointsData;
+        IOzonData<IEnumerable<HoldingForUndeliverableGoodsModel>> _holdingForUndeliverableGoodsData;
         IOzonStores _ozonStores;
         IOzonSecondDataRepository _ozonSecondDataRepository;
         IServiceNamesRepository _serviceNamesRepository;
@@ -52,6 +54,11 @@ namespace YandexCloud.BD.Postgres
             _operationItemReturnModel ??= new PostgresOperationItemReturnRepository(_connection);
         public IOzonData<IEnumerable<PriceByOperationItemReturnModel>> OzonPriceByOperationItemReturnRepository =>
             _priceByOperationItemReturnData ??= new PostgresPriceByOperationItemReturnRepository(_connection);
+        public IOzonData<IEnumerable<PremiumCashbackIndividualPointsModel>> OzonPremiumCashbackIndividualPointsRepository =>
+            _premiumCashbackIndividualPointsData ??= new PostgresPremiumCashbackIndividualPointsRepository(_connection);
+        public IOzonData<IEnumerable<HoldingForUndeliverableGoodsModel>> OzonHoldingForUndeliverableGoodsRepository =>
+            _holdingForUndeliverableGoodsData ??= new PostgresHoldingForUndeliverableGoodsRepository(_connection);
+
 
         public async Task OpenTransactionAsync()
         {

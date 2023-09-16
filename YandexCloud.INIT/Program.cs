@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System.Threading.Channels;
 using YandexCloud.BD.Ozon;
 using YandexCloud.BD.Postgres;
 using YandexCloud.CORE.Repositories;
@@ -14,12 +16,19 @@ builder.Services.AddScoped<IUoW, UoW>();
 builder.Services.AddTransient<IRequestReader, RequestReader>();
 builder.Services.AddTransient<IConsoleReader, ConsoleReader>();
 builder.Services.AddHttpClient();
+builder.Services.AddLogging(l => l.SetMinimumLevel(LogLevel.Error));
 using IHost host = builder.Build();
 
 var reader = host.Services.GetService<IRequestReader>();
 var requestModel = reader.Read();
 
 var baseCl = host.Services.GetService<IBlService>();
-await baseCl.GetDataAsync(requestModel);
+
+baseCl.OzonEventHandler += (message => Console.WriteLine(message));
+var dataGettingTask = baseCl.GetDataAsync(requestModel);
+Console.ReadLine();
 
 await host.RunAsync();
+
+await dataGettingTask;
+baseCl.OzonEventHandler -= (message => Console.WriteLine(message));
