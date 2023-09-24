@@ -12,10 +12,15 @@ namespace YandexCloud.BD.Postgres
 
         public async Task CreateAsync(IEnumerable<OzonMarketingActionCostModel> data)
         {
-            var sql = "insert into marketing_actions (amount, operation_id, date) " +
-                "values (@amount, @operation_id, @date)";
+            var sql = "insert into marketing_actions (amount, operation_id, date, clients_id) " +
+                "values (@amount, @operation_id, @date, @clients_id)";
 
             await _connection.ExecuteAsync(sql, data);
+        }
+
+        public Task<IEnumerable<OzonMarketingActionCostModel>> ReadAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -12,10 +12,15 @@ namespace YandexCloud.BD.Postgres
 
         public async Task CreateAsync(IEnumerable<HoldingForUndeliverableGoodsModel> data)
         {
-            var sql = "insert into marketplace_with_holding_for_undeliverable_goods (sku, name, amount, posting_number, operation_id, date) " +
-                "values (@sku, @name, @amount, @posting_number, @operation_id, @date)";
+            var sql = "insert into marketplace_with_holding_for_undeliverable_goods (sku, name, amount, posting_number, operation_id, date, clients_id) " +
+                "values (@sku, @name, @amount, @posting_number, @operation_id, @date, @clients_id)";
 
             await _connection.ExecuteAsync(sql, data);
+        }
+
+        public Task<IEnumerable<HoldingForUndeliverableGoodsModel>> ReadAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

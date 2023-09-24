@@ -2,8 +2,9 @@
 
 namespace YandexCloud.BD
 {
-    public interface IOzonData<in T> where T : class
+    public interface IOzonData<T> where T : class
     {
         Task CreateAsync(T model);
+        Task<T> ReadAsync();
     }
 }

@@ -17,5 +17,10 @@ namespace YandexCloud.BD.Postgres
 
             await _connection.ExecuteAsync(sql, data);
         }
+
+        public Task<IEnumerable<PriceByReturnGoodsFBSOfRMSModel>> ReadAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

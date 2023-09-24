@@ -12,16 +12,38 @@ namespace YandexCloud.INIT
             _consoleReader = consoleReader;
         }
 
-        public RequestDataDto Read()
+        public IEnumerable<RequestDataDto> Read()
         {
-            var model = new RequestDataDto();
+            string userAnswer;
+            var dataList = new List<RequestDataDto>();
 
-            model.From = _consoleReader.ReadDateTime("Введите дату начала");
-            model.To = _consoleReader.ReadDateTime("Введите дату конца");
-            model.ClientId = _consoleReader.ReadString("Введите id клиента");
-            model.ApiKey = _consoleReader.ReadString("Введите ключ api");
+            do
+            {
+                var model = new RequestDataDto();
 
-            return model;
+                var clientId = _consoleReader.ReadString("Введите id клиента");
+                model.ClientId = Convert.ToInt32(clientId);
+
+                model.ApiKey = _consoleReader.ReadString("Введите ключ api");
+                model.From = _consoleReader.ReadDateTime("Введите дату начала");
+                model.To = _consoleReader.ReadDateTime("Введите дату конца");
+
+                dataList.Add(model);
+
+                Console.WriteLine("Хотите добавить еще один магазин?");
+                userAnswer = Console.ReadLine();
+                if (userAnswer != "yes" && userAnswer != "no")
+                {
+                    do
+                    {
+                        Console.WriteLine("Попробуйте еще раз");
+                        userAnswer = Console.ReadLine();
+                    } while (userAnswer != "yes" && userAnswer != "no");
+                }
+
+            } while (userAnswer == "yes");
+
+            return dataList;
         }
     }
 }

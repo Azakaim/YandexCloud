@@ -10,7 +10,7 @@ namespace YandexCloud.BD.Postgres
     {
         readonly IConfiguration _configuration;
 
-        IOzonData<IEnumerable<OzonFirstDataDto>> _ozonMainData;
+        IOzonData<IEnumerable<OzonFirstTableModel>> _ozonMainData;
         IOzonData<IEnumerable<OzonAcquiringDataDto>> _ozonAcquiringData;
         IOzonData<IEnumerable<OzonMarketingActionCostModel>> _ozonMarketingActionData;
         IOzonData<IEnumerable<ClientReturnAgentOperationModel>> _clientReturnAgentOperationData;
@@ -21,7 +21,8 @@ namespace YandexCloud.BD.Postgres
         IOzonData<IEnumerable<PriceByOperationItemReturnModel>> _priceByOperationItemReturnData;
         IOzonData<IEnumerable<PremiumCashbackIndividualPointsModel>> _premiumCashbackIndividualPointsData;
         IOzonData<IEnumerable<HoldingForUndeliverableGoodsModel>> _holdingForUndeliverableGoodsData;
-        IOzonStores _ozonStores;
+        IOzonData<IEnumerable<OzonClientModel>> _clientData;
+
         IOzonSecondDataRepository _ozonSecondDataRepository;
         IServiceNamesRepository _serviceNamesRepository;
 
@@ -31,12 +32,13 @@ namespace YandexCloud.BD.Postgres
         public UoW(IConfiguration configuration)
         {
             _configuration = configuration;
+
+
             var connString = _configuration["YandexDBConnectionString"];
             _connection = new NpgsqlConnection(connString);
         }
 
-        public IOzonData<IEnumerable<OzonFirstDataDto>> OzonMainDataRepository => _ozonMainData ??= new PostgresOzonMainDataRepository(_connection);
-        public IOzonStores OzonStoresRepository => _ozonStores ??= new PostgresOzonStoresRepository(_connection);
+        public IOzonData<IEnumerable<OzonFirstTableModel>> OzonMainDataRepository => _ozonMainData ??= new PostgresOzonMainDataRepository(_connection);
         public IOzonSecondDataRepository OzonSecondDataRepository => _ozonSecondDataRepository ??= new OzonSecondDataRepository(_connection);
         public IServiceNamesRepository OzonServiceNamesRepository => _serviceNamesRepository ??= new PostgresServiceNamesRepository(_connection);
         public IOzonData<IEnumerable<OzonAcquiringDataDto>> OzonAcquiringRepository => _ozonAcquiringData ??= new PostgresOzonAcquiringDataRepository(_connection);
@@ -58,13 +60,15 @@ namespace YandexCloud.BD.Postgres
             _premiumCashbackIndividualPointsData ??= new PostgresPremiumCashbackIndividualPointsRepository(_connection);
         public IOzonData<IEnumerable<HoldingForUndeliverableGoodsModel>> OzonHoldingForUndeliverableGoodsRepository =>
             _holdingForUndeliverableGoodsData ??= new PostgresHoldingForUndeliverableGoodsRepository(_connection);
+        public IOzonData<IEnumerable<OzonClientModel>> OzonClientRepository =>
+            _clientData ??= new PostgresOzonClientsRepository(_connection);
 
 
         public async Task OpenTransactionAsync()
         {
+            if (_connection.State != ConnectionState.Open) 
+                await _connection.OpenAsync();
 
-            
-            await _connection.OpenAsync();
             _transaction = await _connection.BeginTransactionAsync();
         }
 

@@ -14,9 +14,14 @@ namespace YandexCloud.CORE.Repositories
         public async Task CreateAsync(IEnumerable<OperationReturnGoodsFBSofRMSModel> data)
         {
             var sql = "insert into operation_return_goods_fbsof_rms " +
-                "values (@id, @amount, @operation_id, @date, @sku, @name, @posting_number)";
+                "values (@id, @amount, @operation_id, @date, @sku, @name, @posting_number, @clients_id)";
 
             await _connection.ExecuteAsync(sql, data);
+        }
+
+        public Task<IEnumerable<OperationReturnGoodsFBSofRMSModel>> ReadAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

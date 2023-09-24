@@ -4,6 +4,6 @@ namespace YandexCloud.INIT
 {
     public interface IRequestReader
     {
-        RequestDataDto Read();
+        IEnumerable<RequestDataDto> Read();
     }
 }

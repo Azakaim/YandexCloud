@@ -6,8 +6,7 @@ namespace YandexCloud.CORE.Repositories
 {
     public interface IUoW : IDisposable
     {
-        IOzonData<IEnumerable<OzonFirstDataDto>> OzonMainDataRepository { get; }
-        IOzonStores OzonStoresRepository { get; }
+        IOzonData<IEnumerable<OzonFirstTableModel>> OzonMainDataRepository { get; }
         IOzonSecondDataRepository OzonSecondDataRepository { get; }
         IServiceNamesRepository OzonServiceNamesRepository { get; }
         IOzonData<IEnumerable<OzonAcquiringDataDto>> OzonAcquiringRepository { get; }
@@ -20,6 +19,7 @@ namespace YandexCloud.CORE.Repositories
         IOzonData<IEnumerable<PriceByOperationItemReturnModel>> OzonPriceByOperationItemReturnRepository { get; }
         IOzonData<IEnumerable<PremiumCashbackIndividualPointsModel>> OzonPremiumCashbackIndividualPointsRepository { get; }
         IOzonData<IEnumerable<HoldingForUndeliverableGoodsModel>> OzonHoldingForUndeliverableGoodsRepository { get; }
+        IOzonData<IEnumerable<OzonClientModel>> OzonClientRepository { get; }
 
         Task CommitAsync();
         Task OpenTransactionAsync();

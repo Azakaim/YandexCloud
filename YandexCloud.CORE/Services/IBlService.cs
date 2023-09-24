@@ -6,6 +6,6 @@ namespace YandexCloud.CORE.Services
     {
         event Action<string> OzonEventHandler;
 
-        Task GetDataAsync(RequestDataDto requestModel);
+        Task GetDataAsync(IEnumerable<RequestDataDto> requestModel);
     }
 }

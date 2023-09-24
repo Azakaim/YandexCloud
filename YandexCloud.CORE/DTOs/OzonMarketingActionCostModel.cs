@@ -6,5 +6,7 @@
         public decimal amount { get; set; }
         public string operation_id { get; set; }
         public DateTime date { get; set; }
+        public int clients_id { get; set; }
+
     }
 }

@@ -12,10 +12,15 @@ namespace YandexCloud.BD.Postgres
 
         public async Task CreateAsync(IEnumerable<ClientReturnAgentOperationModel> data)
         {
-            var sql = "insert into client_return_agent (sku, name, amount, posting_number, operation_id, date) " +
-                "values (@sku, @name, @amount, @posting_number, @operation_id, @date)";
+            var sql = "insert into client_return_agent (sku, name, amount, posting_number, operation_id, date, clients_id) " +
+                "values (@sku, @name, @amount, @posting_number, @operation_id, @date, @clients_id)";
 
             await _connection.ExecuteAsync(sql, data);
+        }
+
+        public Task<IEnumerable<ClientReturnAgentOperationModel>> ReadAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

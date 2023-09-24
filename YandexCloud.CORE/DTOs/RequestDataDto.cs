@@ -5,6 +5,6 @@
         public DateTime From { get; set; }
         public DateTime To { get; set; }
         public string ApiKey { get; set; }
-        public string ClientId { get; set; }
+        public int ClientId { get; set; }
     }
 }
