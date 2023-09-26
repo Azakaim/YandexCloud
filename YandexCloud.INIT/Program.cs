@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.Threading.Channels;
 using YandexCloud.BD.Ozon;
 using YandexCloud.BD.Postgres;
 using YandexCloud.CORE.BL.Managers;

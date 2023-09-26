@@ -20,6 +20,7 @@ namespace YandexCloud.CORE.Repositories
         IOzonData<IEnumerable<PremiumCashbackIndividualPointsModel>> OzonPremiumCashbackIndividualPointsRepository { get; }
         IOzonData<IEnumerable<HoldingForUndeliverableGoodsModel>> OzonHoldingForUndeliverableGoodsRepository { get; }
         IOzonData<IEnumerable<OzonClientModel>> OzonClientRepository { get; }
+        IOzonData<IEnumerable<DTOs.Articuls.Item>> OzonArticuslData { get; }
 
         Task CommitAsync();
         Task OpenTransactionAsync();

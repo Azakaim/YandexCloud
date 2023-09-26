@@ -20,29 +20,38 @@ namespace YandexCloud.CORE.Services
         {
             var managerList = new List<OzonManager>();
 
-            foreach (var dto in requestDto)
+            try
             {
-                var manager = new OzonManager(_ozonFullData, _uoW);
-                var clientModel = new OzonClientModel { id = dto.ClientId, api_key = dto.ApiKey };
+                foreach (var dto in requestDto)
+                {
+                    var manager = new OzonManager(_ozonFullData, _uoW);
+                    var clientModel = new OzonClientModel { id = dto.ClientId, api_key = dto.ApiKey };
 
-                var clientModelFromDb = await _uoW.OzonClientRepository.ReadAsync();
-                if (!clientModelFromDb.Any(c => c.id == clientModel.id))
-                    await _uoW.OzonClientRepository.CreateAsync(new List<OzonClientModel> { clientModel });
+                    var clientModelFromDb = await _uoW.OzonClientRepository.ReadAsync();
+                    if (!clientModelFromDb.Any(c => c.id == clientModel.id))
+                        await _uoW.OzonClientRepository.CreateAsync(new List<OzonClientModel> { clientModel });
 
-                manager.OzonEventHandler += str => {
-                    OzonEventHandler?.Invoke(str);
-                };
-                managerList.Add(manager);
+                    manager.OzonEventHandler += str => {
+                        OzonEventHandler?.Invoke(str);
+                    };
+                    managerList.Add(manager);
 
-                await manager.HandleOzonData(dto);
+                    await manager.HandleOzonData(dto);
+                }
+
+                foreach (var item in managerList)
+                {
+                    item.OzonEventHandler -= str => {
+                        OzonEventHandler?.Invoke(str);
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
             }
 
-            foreach (var item in managerList)
-            {
-                item.OzonEventHandler -= str => {
-                    OzonEventHandler?.Invoke(str);
-                };
-            }
         }
     }
 }

@@ -3,6 +3,7 @@ using Npgsql;
 using System.Data;
 using YandexCloud.CORE.DTOs;
 using YandexCloud.CORE.Repositories;
+using ArticulItem = YandexCloud.CORE.DTOs.Articuls.Item ;
 
 namespace YandexCloud.BD.Postgres
 {
@@ -22,6 +23,7 @@ namespace YandexCloud.BD.Postgres
         IOzonData<IEnumerable<PremiumCashbackIndividualPointsModel>> _premiumCashbackIndividualPointsData;
         IOzonData<IEnumerable<HoldingForUndeliverableGoodsModel>> _holdingForUndeliverableGoodsData;
         IOzonData<IEnumerable<OzonClientModel>> _clientData;
+        IOzonData<IEnumerable<ArticulItem>> _articulsData;
 
         IOzonSecondDataRepository _ozonSecondDataRepository;
         IServiceNamesRepository _serviceNamesRepository;
@@ -62,6 +64,8 @@ namespace YandexCloud.BD.Postgres
             _holdingForUndeliverableGoodsData ??= new PostgresHoldingForUndeliverableGoodsRepository(_connection);
         public IOzonData<IEnumerable<OzonClientModel>> OzonClientRepository =>
             _clientData ??= new PostgresOzonClientsRepository(_connection);
+        public IOzonData<IEnumerable<ArticulItem>> OzonArticuslData =>
+            _articulsData ??= new PostgresArticulsRepository(_connection);
 
 
         public async Task OpenTransactionAsync()

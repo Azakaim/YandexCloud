@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using YandexCloud.BD.Models;
 using YandexCloud.CORE.DTOs;
+using YandexCloud.CORE.DTOs.Articuls;
 using YandexCloud.CORE.Models;
 using YandexCloud.CORE.Repositories;
 
@@ -53,6 +54,28 @@ namespace YandexCloud.BD.Ozon
                 throw new HttpRequestException($"Получен код {responce.StatusCode}");
 
             var ozonResponceModel = await responce.Content.ReadFromJsonAsync<OzonResponseModel>();
+
+            return ozonResponceModel;
+        }
+
+        public async Task<OzonArticulesResponseModel> GetArticulsAsync(RequestArticulsDto requestModel)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            var url = "https://api-seller.ozon.ru/v2/product/info/list";
+
+            httpClient.DefaultRequestHeaders.Add("Client-Id", requestModel.ClientId);
+            httpClient.DefaultRequestHeaders.Add("Api-Key", requestModel.ApiKey);
+
+            var request = new OzonArticulsRequestModel { sku = requestModel.sku };
+
+            using var content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            var responce = await httpClient.PostAsync(url, content);
+
+            if (!responce.IsSuccessStatusCode)
+                throw new HttpRequestException($"Получен код {responce.StatusCode}");
+
+            var temp = await responce.Content.ReadAsStringAsync();
+            var ozonResponceModel = await responce.Content.ReadFromJsonAsync<OzonArticulesResponseModel>();
 
             return ozonResponceModel;
         }
