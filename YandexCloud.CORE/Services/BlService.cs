@@ -1,4 +1,5 @@
 ﻿using YandexCloud.CORE.BL.Managers;
+using YandexCloud.CORE.BL.RequestHandlers;
 using YandexCloud.CORE.DTOs;
 using YandexCloud.CORE.Repositories;
 
@@ -6,14 +7,15 @@ namespace YandexCloud.CORE.Services
 {
     public class BlService : IBlService
     {
-        readonly IOzonFullData _ozonFullData;
         readonly IUoW _uoW;
+        readonly IEnumerable<IRequestHandler> _requestHandler;
+
         public event Action<string> OzonEventHandler;
 
-        public BlService(IOzonFullData ozon, IUoW uoW)
+        public BlService(IUoW uoW, IEnumerable<IRequestHandler> requestHandler)
         {
-            _ozonFullData = ozon;
             _uoW = uoW;
+            _requestHandler = requestHandler;
         }
 
         public async Task GetDataAsync(IEnumerable<RequestDataDto> requestDto)
@@ -24,7 +26,7 @@ namespace YandexCloud.CORE.Services
             {
                 foreach (var dto in requestDto)
                 {
-                    var manager = new OzonManager(_ozonFullData, _uoW);
+                    var manager = new OzonManager(_uoW, _requestHandler);
                     var clientModel = new OzonClientModel { id = dto.ClientId, api_key = dto.ApiKey };
 
                     var clientModelFromDb = await _uoW.OzonClientRepository.ReadAsync();

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using YandexCloud.BD.Ozon;
 using YandexCloud.BD.Postgres;
 using YandexCloud.CORE.BL.Managers;
+using YandexCloud.CORE.BL.RequestHandlers;
 using YandexCloud.CORE.Repositories;
 using YandexCloud.CORE.Services;
 using YandexCloud.INIT;
@@ -16,6 +17,16 @@ builder.Services.AddScoped<IUoW, UoW>();
 builder.Services.AddTransient<IRequestReader, RequestReader>();
 builder.Services.AddTransient<IConsoleReader, ConsoleReader>();
 builder.Services.AddTransient<IOzonManager, OzonManager>();
+
+builder.Services.AddTransient<IRequestHandler, OperationAgentDeliveredToCustomerHandler>();
+//builder.Services.AddTransient<IRequestHandler, MarketplaceRedistributionOfAcquiringHandler>();
+//builder.Services.AddTransient<IRequestHandler, MarketingActionCostHandler>();
+//builder.Services.AddTransient<IRequestHandler, ClientReturnAgentHandler>();
+//builder.Services.AddTransient<IRequestHandler, ReturnAgentOperationRfbsHandler>();
+//builder.Services.AddTransient<IRequestHandler, ReturnGoodsFbsOfRmsHandler>();
+//builder.Services.AddTransient<IRequestHandler, OperationItemReturnHandler>();
+//builder.Services.AddTransient<IRequestHandler, ServicePremiumCashbackIndividualPointsHandler>();
+//builder.Services.AddTransient<IRequestHandler, HoldingForUndeliverableGoodsHandler>();
 
 builder.Services.AddHttpClient();
 builder.Services.AddLogging(l => l.SetMinimumLevel(LogLevel.Error));
