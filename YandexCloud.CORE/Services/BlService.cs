@@ -48,7 +48,7 @@ namespace YandexCloud.CORE.Services
             }
             catch (Exception ex)
             {
-
+                OzonEventHandler?.Invoke(ex.Message);
                 throw;
             }
 

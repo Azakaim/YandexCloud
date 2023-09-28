@@ -16,9 +16,10 @@ namespace YandexCloud.BD.Postgres
             await _connection.ExecuteAsync(sql, model);
         }
 
-        public Task<IEnumerable<Item>> ReadAsync()
+        public async Task<IEnumerable<Item>> ReadAsync()
         {
-            throw new NotImplementedException();
+            var sql = "select * from articuls";
+            return await _connection.QueryAsync<Item>(sql);
         }
     }
 }
