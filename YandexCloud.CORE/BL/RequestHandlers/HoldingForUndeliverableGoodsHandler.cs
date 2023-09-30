@@ -1,23 +1,23 @@
 ﻿using YandexCloud.CORE.DTOs;
-using YandexCloud.CORE.DTOs.RequestsDto;
 using YandexCloud.CORE.Repositories;
 
 namespace YandexCloud.CORE.BL.RequestHandlers
 {
     public class HoldingForUndeliverableGoodsHandler : BaseRequestHandler
     {
-        public HoldingForUndeliverableGoodsHandler(IOzonFullData ozonFullData, IUoW uow) : base(ozonFullData, uow)
+        readonly List<HoldingForUndeliverableGoodsModel> _holdingForUndeliverableGoodsData;
+
+        public HoldingForUndeliverableGoodsHandler(IOzonFullData ozonFullData) : base(ozonFullData)
         {
+            _holdingForUndeliverableGoodsData = new List<HoldingForUndeliverableGoodsModel>();
         }
 
         protected override string GetOperationType() => "OperationMarketplaceWithHoldingForUndeliverableGoods";
 
-        protected override async Task<CommonRequestDto> HandleRequest(Operation data)
+        protected override async Task HandleRequest(Operation data)
         {
-            return await Task.Run(() => { 
-                var holdingForUndeliverableGoodsData = new List<HoldingForUndeliverableGoodsModel>();
-                
-                holdingForUndeliverableGoodsData.Add(new HoldingForUndeliverableGoodsModel
+            await Task.Run(() => { 
+                _holdingForUndeliverableGoodsData.Add(new HoldingForUndeliverableGoodsModel
                 {
                     sku = data.items.FirstOrDefault().sku.ToString(),
                     name = data.items.FirstOrDefault().name,
@@ -28,7 +28,7 @@ namespace YandexCloud.CORE.BL.RequestHandlers
                     clients_id = _requestDto.ClientId
                 });
 
-                return new CommonRequestDto { HoldingForUndeliverableGoodsModels = holdingForUndeliverableGoodsData };
+                _result.HoldingForUndeliverableGoodsModels = _holdingForUndeliverableGoodsData;
             });
         }
     }

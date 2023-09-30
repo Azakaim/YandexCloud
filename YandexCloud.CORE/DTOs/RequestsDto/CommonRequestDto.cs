@@ -2,7 +2,7 @@
 {
     public class CommonRequestDto
     {
-        public FirstSecondRequestDto FirstSecondRequest { get; set; }
+        public FirstSecondRequestDto FirstSecondRequest { get; set; } = new FirstSecondRequestDto();
         public IEnumerable<OzonAcquiringDataDto> OzonAcquiringDataDtos { get; set; }
         public IEnumerable<OzonMarketingActionCostModel> OzonMarketingActionCostModels { get; set; }
         public IEnumerable<ClientReturnAgentOperationModel> ClientReturnAgentOperationModels { get; set; }

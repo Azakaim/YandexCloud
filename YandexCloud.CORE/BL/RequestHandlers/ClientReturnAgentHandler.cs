@@ -1,23 +1,23 @@
-﻿using YandexCloud.CORE.BL.RequestHandlers;
-using YandexCloud.CORE.DTOs;
-using YandexCloud.CORE.DTOs.RequestsDto;
+﻿using YandexCloud.CORE.DTOs;
 using YandexCloud.CORE.Repositories;
 
 namespace YandexCloud.CORE.BL.RequestHandlers
 {
     public class ClientReturnAgentHandler : BaseRequestHandler
     {
-        public ClientReturnAgentHandler(IOzonFullData ozonFullData, IUoW uow) : base(ozonFullData, uow)
+        readonly List<ClientReturnAgentOperationModel> _clientReturnAgentData;
+
+        public ClientReturnAgentHandler(IOzonFullData ozonFullData) : base(ozonFullData)
         {
+            _clientReturnAgentData = new List<ClientReturnAgentOperationModel>();
         }
 
         protected override string GetOperationType() => "ClientReturnAgentOperation";
 
-        protected override async Task<CommonRequestDto> HandleRequest(Operation data)
+        protected override async Task HandleRequest(Operation data)
         {
-            return await Task.Run(() => { 
-                var clientReturnAgentData = new List<ClientReturnAgentOperationModel>();
-                clientReturnAgentData.Add(new ClientReturnAgentOperationModel
+            await Task.Run(() => { 
+                _clientReturnAgentData.Add(new ClientReturnAgentOperationModel
                 {
                     sku = data.items.FirstOrDefault().sku.ToString(),
                     name = data.items.FirstOrDefault().name,
@@ -28,7 +28,7 @@ namespace YandexCloud.CORE.BL.RequestHandlers
                     clients_id = _requestDto.ClientId
                 });
 
-                return new CommonRequestDto { ClientReturnAgentOperationModels = clientReturnAgentData };
+                _result.ClientReturnAgentOperationModels = _clientReturnAgentData;
             });
         }
     }

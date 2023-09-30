@@ -7,22 +7,20 @@ namespace YandexCloud.CORE.BL.Managers
 {
     public class OzonManager : IOzonManager
     {
-        readonly IUoW _uoW;
+        readonly IUoW _uow;
         readonly IEnumerable<IRequestHandler> _requestHandler;
 
         public event Action<string> OzonEventHandler;
 
         public OzonManager(IUoW uoW, IEnumerable<IRequestHandler> requestHandler)
         {
-            _uoW = uoW;
+            _uow = uoW;
             _requestHandler = requestHandler;
         }
 
         public async Task HandleOzonData(RequestDataDto requestDto)
         {
-
-
-
+            #region comments
 
             //    var items = new List<List<Item>>();
 
@@ -65,61 +63,83 @@ namespace YandexCloud.CORE.BL.Managers
             //    }
 
             //    await _uoW.OzonArticuslData.CreateAsync(uniqueInListFromOzon);
-
+            #endregion
 
             OzonEventHandler?.Invoke("Начинаем получать данные из озона");
 
             try
             {
                 var tasks = new List<Task<CommonRequestDto>>();
+                var webRequestsStart = DateTime.Now;
+
+                var ozonServiseNames = await _uow.OzonServiceNamesRepository.GetAsync();
 
                 foreach (var item in _requestHandler)
                 {
-                    tasks.Add(item.SendRequest(requestDto));
+                    tasks.Add(item.SendRequest(requestDto, ozonServiseNames));
                 }
 
-                await Task.WhenAll(tasks);
-                
-                var ozonFirstDataList = tasks[0].Result.FirstSecondRequest.OzonFirstDataList;
-                var ozonSecondDataList = tasks[0].Result.FirstSecondRequest.OzonSecondDataList;
+                await _uow.OpenTransactionAsync();
+                while (tasks.Count > 0)
+                {
+                    var finishedTask = await Task.WhenAny(tasks);
 
-                //var ozonAcquiringData = tasks[1].Result.OzonAcquiringDataDtos;
-                //var ozonMarketingActionData = tasks[2].Result.OzonMarketingActionCostModels;
-                //var clientReturnAgentData = tasks[3].Result.ClientReturnAgentOperationModels;
-                //var returnAgentOperationRFBSData = tasks[4].Result.ReturnAgentOperationRFBSModels;
-                //var operationReturnGoodsFBSofRMSData = tasks[5].Result.OperationReturnGoodsFBSofRMSModels;
-                //var priceByReturnGoodsFBSOfRMSData = tasks[5].Result.PriceByReturnGoodsFBSOfRMSModels;
-                //var operationItemReturnData = tasks[6].Result.OperationItemReturnModels;
-                //var priceByOperationItemReturnData = tasks[6].Result.PriceByOperationItemReturnModels;
-                //var premiumCashbackIndividualPointsData = tasks[7].Result.PremiumCashbackIndividualPointsModels;
-                //var holdingForUndeliverableGoodsData = tasks[8].Result.HoldingForUndeliverableGoodsModels;
+                    await SaveResults(finishedTask);
+                    tasks.Remove(finishedTask);
+                }
+                await _uow.CommitAsync();
 
-                OzonEventHandler?.Invoke("Сохраняем обработанные данные");
-
-                await _uoW.OpenTransactionAsync();
-
-                await _uoW.OzonMainDataRepository.CreateAsync(ozonFirstDataList);
-                await _uoW.OzonSecondDataRepository.CreateAsync(ozonSecondDataList);
-                //await _uoW.OzonAcquiringRepository.CreateAsync(ozonAcquiringData);
-                //await _uoW.OzonMarketingActionsRepository.CreateAsync(ozonMarketingActionData);
-                //await _uoW.OzonClientReturnAgentRepository.CreateAsync(clientReturnAgentData);
-                //await _uoW.OzonReturnAgentOperationRFBSRepository.CreateAsync(returnAgentOperationRFBSData);
-                //await _uoW.OzonOperationReturnGoodsFbsOfRmsRepository.CreateAsync(operationReturnGoodsFBSofRMSData);
-                //await _uoW.OzonPriceByReturnGoodsFbsOfRmsRepository.CreateAsync(priceByReturnGoodsFBSOfRMSData);
-                //await _uoW.OzonOperationItemReturnRepository.CreateAsync(operationItemReturnData);
-                //await _uoW.OzonPriceByOperationItemReturnRepository.CreateAsync(priceByOperationItemReturnData);
-                //await _uoW.OzonPremiumCashbackIndividualPointsRepository.CreateAsync(premiumCashbackIndividualPointsData);
-                //await _uoW.OzonHoldingForUndeliverableGoodsRepository.CreateAsync(holdingForUndeliverableGoodsData);
-
-
-                await _uoW.CommitAsync();
-                OzonEventHandler?.Invoke("Данные успешно сохранены");
-
+                OzonEventHandler?.Invoke($"Длительность выполнения запросов: {DateTime.Now - webRequestsStart}");
             }
             catch (Exception ex)
             {
-                await _uoW.RollbackAsync();
+                await _uow.RollbackAsync();
                 throw;
+            }
+        }
+
+        private async Task SaveResults(Task<CommonRequestDto> finishedTask)
+        {
+            var result = finishedTask.Result;
+
+            if (result.FirstSecondRequest.OzonFirstDataList.Count > 0)
+            {
+                await _uow.OzonMainDataRepository.CreateAsync(result.FirstSecondRequest.OzonFirstDataList);
+                await _uow.OzonSecondDataRepository.CreateAsync(result.FirstSecondRequest.OzonSecondDataList);
+            } 
+            else if (result.OzonAcquiringDataDtos?.Count() > 0)
+            {
+                await _uow.OzonAcquiringRepository.CreateAsync(result.OzonAcquiringDataDtos);
+            }
+            else if (result.OzonMarketingActionCostModels?.Count() > 0)
+            {
+                await _uow.OzonMarketingActionsRepository.CreateAsync(result.OzonMarketingActionCostModels);
+            }
+            else if (result.ClientReturnAgentOperationModels?.Count() > 0)
+            {
+                await _uow.OzonClientReturnAgentRepository.CreateAsync(result.ClientReturnAgentOperationModels);
+            }
+            else if (result.ReturnAgentOperationRFBSModels?.Count() > 0)
+            {
+                await _uow.OzonReturnAgentOperationRFBSRepository.CreateAsync(result.ReturnAgentOperationRFBSModels);
+            }
+            else if (result.OperationReturnGoodsFBSofRMSModels?.Count() > 0)
+            {
+                await _uow.OzonOperationReturnGoodsFbsOfRmsRepository.CreateAsync(result.OperationReturnGoodsFBSofRMSModels);
+                await _uow.OzonPriceByReturnGoodsFbsOfRmsRepository.CreateAsync(result.PriceByReturnGoodsFBSOfRMSModels);
+            }
+            else if (result.OperationItemReturnModels?.Count() > 0)
+            {
+                await _uow.OzonOperationItemReturnRepository.CreateAsync(result.OperationItemReturnModels);
+                await _uow.OzonPriceByOperationItemReturnRepository.CreateAsync(result.PriceByOperationItemReturnModels);
+            }
+            else if (result.PremiumCashbackIndividualPointsModels?.Count() > 0)
+            {
+                await _uow.OzonPremiumCashbackIndividualPointsRepository.CreateAsync(result.PremiumCashbackIndividualPointsModels);
+            }
+            else if (result.HoldingForUndeliverableGoodsModels?.Count() > 0)
+            {
+                await _uow.OzonHoldingForUndeliverableGoodsRepository.CreateAsync(result.HoldingForUndeliverableGoodsModels);
             }
         }
     }

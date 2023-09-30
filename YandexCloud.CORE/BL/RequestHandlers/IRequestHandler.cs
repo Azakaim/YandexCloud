@@ -5,6 +5,6 @@ namespace YandexCloud.CORE.BL.RequestHandlers
 {
     public interface IRequestHandler
     {
-        Task<CommonRequestDto> SendRequest(RequestDataDto requestDto);
+        Task<CommonRequestDto> SendRequest(RequestDataDto requestDto, IEnumerable<OzonServiceNamesDto> ozonServiseNames);
     }
 }

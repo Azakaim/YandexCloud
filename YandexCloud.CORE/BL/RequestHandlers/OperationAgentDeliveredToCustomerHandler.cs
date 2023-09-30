@@ -6,10 +6,10 @@ namespace YandexCloud.CORE.BL.RequestHandlers
 {
     public class OperationAgentDeliveredToCustomerHandler : BaseRequestHandler
     {
-        List<OzonFirstTableModel> _ozonFirstDataList;
-        List<OzonSecondDataDto> _ozonSecondDataList;
+        readonly List<OzonFirstTableModel> _ozonFirstDataList;
+        readonly List<OzonSecondDataDto> _ozonSecondDataList;
 
-        public OperationAgentDeliveredToCustomerHandler(IOzonFullData ozonFullData, IUoW uow) : base(ozonFullData, uow)
+        public OperationAgentDeliveredToCustomerHandler(IOzonFullData ozonFullData, IUoW uow) : base(ozonFullData)
         {
             _ozonFirstDataList = new List<OzonFirstTableModel>();
             _ozonSecondDataList = new List<OzonSecondDataDto>();
@@ -32,9 +32,7 @@ namespace YandexCloud.CORE.BL.RequestHandlers
                 clients_id = _requestDto.ClientId
             });
 
-            var ozonServiseNames = await _uow.OzonServiceNamesRepository.GetAsync();
-
-            var service = ozonServiseNames.FirstOrDefault();
+            var service = _ozonServiseNames.FirstOrDefault();
             var serviceFromResponse = data.services.FirstOrDefault(n => n.name == service.name);
 
             _ozonSecondDataList.Add(new OzonSecondDataDto
@@ -44,7 +42,7 @@ namespace YandexCloud.CORE.BL.RequestHandlers
                 ozon_service_names_id = 1
             });
 
-            service = ozonServiseNames.FirstOrDefault(i => i.id == 2);
+            service = _ozonServiseNames.FirstOrDefault(i => i.id == 2);
             serviceFromResponse = data.services.FirstOrDefault(n => n.name == service.name);
 
             _ozonSecondDataList.Add(new OzonSecondDataDto

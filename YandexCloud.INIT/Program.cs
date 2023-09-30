@@ -19,14 +19,14 @@ builder.Services.AddTransient<IConsoleReader, ConsoleReader>();
 builder.Services.AddTransient<IOzonManager, OzonManager>();
 
 builder.Services.AddTransient<IRequestHandler, OperationAgentDeliveredToCustomerHandler>();
-//builder.Services.AddTransient<IRequestHandler, MarketplaceRedistributionOfAcquiringHandler>();
-//builder.Services.AddTransient<IRequestHandler, MarketingActionCostHandler>();
-//builder.Services.AddTransient<IRequestHandler, ClientReturnAgentHandler>();
-//builder.Services.AddTransient<IRequestHandler, ReturnAgentOperationRfbsHandler>();
-//builder.Services.AddTransient<IRequestHandler, ReturnGoodsFbsOfRmsHandler>();
-//builder.Services.AddTransient<IRequestHandler, OperationItemReturnHandler>();
-//builder.Services.AddTransient<IRequestHandler, ServicePremiumCashbackIndividualPointsHandler>();
-//builder.Services.AddTransient<IRequestHandler, HoldingForUndeliverableGoodsHandler>();
+builder.Services.AddTransient<IRequestHandler, MarketplaceRedistributionOfAcquiringHandler>();
+builder.Services.AddTransient<IRequestHandler, MarketingActionCostHandler>();
+builder.Services.AddTransient<IRequestHandler, ClientReturnAgentHandler>();
+builder.Services.AddTransient<IRequestHandler, ReturnAgentOperationRfbsHandler>();
+builder.Services.AddTransient<IRequestHandler, ReturnGoodsFbsOfRmsHandler>();
+builder.Services.AddTransient<IRequestHandler, OperationItemReturnHandler>();
+builder.Services.AddTransient<IRequestHandler, ServicePremiumCashbackIndividualPointsHandler>();
+builder.Services.AddTransient<IRequestHandler, HoldingForUndeliverableGoodsHandler>();
 
 builder.Services.AddHttpClient();
 builder.Services.AddLogging(l => l.SetMinimumLevel(LogLevel.Error));

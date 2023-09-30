@@ -1,23 +1,25 @@
 ﻿using YandexCloud.CORE.DTOs;
-using YandexCloud.CORE.DTOs.RequestsDto;
 using YandexCloud.CORE.Repositories;
 
 namespace YandexCloud.CORE.BL.RequestHandlers
 {
     public class OperationItemReturnHandler : BaseRequestHandler
     {
-        public OperationItemReturnHandler(IOzonFullData ozonFullData, IUoW uow) : base(ozonFullData, uow)
+        readonly List<OperationItemReturnModel> _operationItemReturnData;
+        readonly List<PriceByOperationItemReturnModel> _priceByOperationItemReturnData;
+
+
+        public OperationItemReturnHandler(IOzonFullData ozonFullData) : base(ozonFullData)
         {
+            _operationItemReturnData = new List<OperationItemReturnModel>();
+            _priceByOperationItemReturnData = new List<PriceByOperationItemReturnModel>();
         }
 
         protected override string GetOperationType() => "OperationItemReturn";
 
-        protected override async Task<CommonRequestDto> HandleRequest(Operation data)
+        protected override async Task HandleRequest(Operation data)
         {
-            return await Task.Run(() => {
-                var operationItemReturnData = new List<OperationItemReturnModel>();
-                var priceByOperationItemReturnData = new List<PriceByOperationItemReturnModel>();
-
+            await Task.Run(() => {
                 var operationReturnGoodsFBSofRMSDataGuid = Guid.NewGuid().ToString();
 
                 var serviceDelivToCustomer = data.services.FirstOrDefault(s => s.name == "MarketplaceServiceItemReturnAfterDelivToCustomer");
@@ -26,7 +28,7 @@ namespace YandexCloud.CORE.BL.RequestHandlers
                 var serviceReturnPartGoodsCustomer = data.services.FirstOrDefault(s => s.name == "MarketplaceServiceItemReturnPartGoodsCustomer");
 
                 if (serviceDelivToCustomer != null)
-                    priceByOperationItemReturnData.Add(new PriceByOperationItemReturnModel
+                    _priceByOperationItemReturnData.Add(new PriceByOperationItemReturnModel
                     {
                         price = serviceDelivToCustomer.price,
                         ozon_service_name_id = 3,
@@ -34,7 +36,7 @@ namespace YandexCloud.CORE.BL.RequestHandlers
                     });
 
                 if (serviceFlowLogistic != null)
-                    priceByOperationItemReturnData.Add(new PriceByOperationItemReturnModel
+                    _priceByOperationItemReturnData.Add(new PriceByOperationItemReturnModel
                     {
                         price = serviceFlowLogistic.price,
                         ozon_service_name_id = 4,
@@ -42,7 +44,7 @@ namespace YandexCloud.CORE.BL.RequestHandlers
                     });
 
                 if (serviceNotDelivToCustomer != null)
-                    priceByOperationItemReturnData.Add(new PriceByOperationItemReturnModel
+                    _priceByOperationItemReturnData.Add(new PriceByOperationItemReturnModel
                     {
                         price = serviceNotDelivToCustomer.price,
                         ozon_service_name_id = 5,
@@ -50,14 +52,14 @@ namespace YandexCloud.CORE.BL.RequestHandlers
                     });
 
                 if (serviceReturnPartGoodsCustomer != null)
-                    priceByOperationItemReturnData.Add(new PriceByOperationItemReturnModel
+                    _priceByOperationItemReturnData.Add(new PriceByOperationItemReturnModel
                     {
                         price = serviceReturnPartGoodsCustomer.price,
                         ozon_service_name_id = 6,
                         operation_item_return_id = operationReturnGoodsFBSofRMSDataGuid,
                     });
 
-                operationItemReturnData.Add(new OperationItemReturnModel
+                _operationItemReturnData.Add(new OperationItemReturnModel
                 {
                     id = operationReturnGoodsFBSofRMSDataGuid,
                     sku = data.items.FirstOrDefault().sku.ToString(),
@@ -69,11 +71,8 @@ namespace YandexCloud.CORE.BL.RequestHandlers
                     clients_id = _requestDto.ClientId
                 });
 
-                return new CommonRequestDto 
-                {
-                    OperationItemReturnModels = operationItemReturnData,
-                    PriceByOperationItemReturnModels = priceByOperationItemReturnData
-                };
+                _result.OperationItemReturnModels = _operationItemReturnData;
+                _result.PriceByOperationItemReturnModels = _priceByOperationItemReturnData;
             });
         }
     }

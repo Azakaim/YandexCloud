@@ -1,23 +1,24 @@
 ﻿using YandexCloud.CORE.DTOs;
-using YandexCloud.CORE.DTOs.RequestsDto;
 using YandexCloud.CORE.Repositories;
 
 namespace YandexCloud.CORE.BL.RequestHandlers
 {
     public class MarketplaceRedistributionOfAcquiringHandler : BaseRequestHandler
     {
-        public MarketplaceRedistributionOfAcquiringHandler(IOzonFullData ozonFullData, IUoW uow) : base(ozonFullData, uow)
+        readonly List<OzonAcquiringDataDto> _ozonAcquiringData;
+
+        public MarketplaceRedistributionOfAcquiringHandler(IOzonFullData ozonFullData) : base(ozonFullData)
         {
+            _ozonAcquiringData = new List<OzonAcquiringDataDto>();
         }
 
         protected override string GetOperationType() => "MarketplaceRedistributionOfAcquiringOperation";
 
-        protected override async Task<CommonRequestDto> HandleRequest(Operation data)
+        protected override async Task HandleRequest(Operation data)
         {
-            return await Task.Run(() => {
-                var ozonAcquiringData = new List<OzonAcquiringDataDto>();
+            await Task.Run(() => {
 
-                ozonAcquiringData.Add(new OzonAcquiringDataDto
+                _ozonAcquiringData.Add(new OzonAcquiringDataDto
                 {
                     sku = data.items.FirstOrDefault().sku.ToString(),
                     name = data.items.FirstOrDefault().name,
@@ -28,10 +29,7 @@ namespace YandexCloud.CORE.BL.RequestHandlers
                     clients_id = _requestDto.ClientId
                 });
 
-                return new CommonRequestDto
-                {
-                    OzonAcquiringDataDtos = ozonAcquiringData,
-                };
+                _result.OzonAcquiringDataDtos = _ozonAcquiringData;
             });
         }
     }

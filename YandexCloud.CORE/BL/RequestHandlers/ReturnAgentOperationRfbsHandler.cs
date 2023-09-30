@@ -1,23 +1,24 @@
 ﻿using YandexCloud.CORE.DTOs;
-using YandexCloud.CORE.DTOs.RequestsDto;
 using YandexCloud.CORE.Repositories;
 
 namespace YandexCloud.CORE.BL.RequestHandlers
 {
     public class ReturnAgentOperationRfbsHandler : BaseRequestHandler
     {
-        public ReturnAgentOperationRfbsHandler(IOzonFullData ozonFullData, IUoW uow) : base(ozonFullData, uow)
+        readonly List<ReturnAgentOperationRFBSModel> _returnAgentOperationRFBSData;
+
+        public ReturnAgentOperationRfbsHandler(IOzonFullData ozonFullData) : base(ozonFullData)
         {
+            _returnAgentOperationRFBSData = new List<ReturnAgentOperationRFBSModel>();
         }
 
         protected override string GetOperationType() => "ReturnAgentOperationRFBS";
 
-        protected override async Task<CommonRequestDto> HandleRequest(Operation data)
+        protected override async Task HandleRequest(Operation data)
         {
-            return await Task.Run(() => {
-                var returnAgentOperationRFBSData = new List<ReturnAgentOperationRFBSModel>();
+            await Task.Run(() => {
 
-                returnAgentOperationRFBSData.Add(new ReturnAgentOperationRFBSModel
+                _returnAgentOperationRFBSData.Add(new ReturnAgentOperationRFBSModel
                 {
                     sku = data.items.FirstOrDefault().sku.ToString(),
                     name = data.items.FirstOrDefault().name,
@@ -28,7 +29,7 @@ namespace YandexCloud.CORE.BL.RequestHandlers
                     clients_id = _requestDto.ClientId
                 });
 
-                return new CommonRequestDto { ReturnAgentOperationRFBSModels = returnAgentOperationRFBSData };
+                _result.ReturnAgentOperationRFBSModels = _returnAgentOperationRFBSData;
             });
         }
     }

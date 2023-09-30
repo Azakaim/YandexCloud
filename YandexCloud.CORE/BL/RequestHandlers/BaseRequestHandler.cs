@@ -9,21 +9,21 @@ namespace YandexCloud.CORE.BL.RequestHandlers
     public abstract class BaseRequestHandler : IRequestHandler
     {
         readonly IOzonFullData _ozonFullData;
-        private protected readonly IUoW _uow;
 
         private protected RequestDataDto _requestDto;
         private protected CommonRequestDto _result;
+        private protected IEnumerable<OzonServiceNamesDto> _ozonServiseNames;
 
-        public BaseRequestHandler(IOzonFullData ozonFullData, IUoW uow)
+        public BaseRequestHandler(IOzonFullData ozonFullData)
         {
             _ozonFullData = ozonFullData;
-            _uow = uow;
         }
 
-        public async Task<CommonRequestDto> SendRequest(RequestDataDto requestDto)
+        public async Task<CommonRequestDto> SendRequest(RequestDataDto requestDto, IEnumerable<OzonServiceNamesDto> ozonServiseNames)
         {
             _requestDto = requestDto;
             _result = new CommonRequestDto();
+            _ozonServiseNames = ozonServiseNames;
 
             var mapper = new MapperConfiguration(cfg => cfg.CreateMap<RequestDataDto, RequestDataModel>()).CreateMapper();
             var requestModel = mapper.Map<RequestDataDto, RequestDataModel>(requestDto);

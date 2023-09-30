@@ -6,18 +6,19 @@ namespace YandexCloud.CORE.BL.RequestHandlers
 {
     public class ServicePremiumCashbackIndividualPointsHandler : BaseRequestHandler
     {
-        public ServicePremiumCashbackIndividualPointsHandler(IOzonFullData ozonFullData, IUoW uow) : base(ozonFullData, uow)
+        readonly List<PremiumCashbackIndividualPointsModel> _premiumCashbackIndividualPointsData;
+
+        public ServicePremiumCashbackIndividualPointsHandler(IOzonFullData ozonFullData) : base(ozonFullData)
         {
+            _premiumCashbackIndividualPointsData = new List<PremiumCashbackIndividualPointsModel>();
         }
 
         protected override string GetOperationType() => "OperationMarketplaceServicePremiumCashbackIndividualPoints";
 
-        protected override async Task<CommonRequestDto> HandleRequest(Operation data)
+        protected override async Task HandleRequest(Operation data)
         {
-            return await Task.Run(() => { 
-                var premiumCashbackIndividualPointsData = new List<PremiumCashbackIndividualPointsModel>();
-
-                premiumCashbackIndividualPointsData.Add(new PremiumCashbackIndividualPointsModel
+            await Task.Run(() => { 
+                _premiumCashbackIndividualPointsData.Add(new PremiumCashbackIndividualPointsModel
                 {
                     sku = data.items.FirstOrDefault().sku.ToString(),
                     name = data.items.FirstOrDefault().name,
@@ -28,7 +29,7 @@ namespace YandexCloud.CORE.BL.RequestHandlers
                     clients_id = _requestDto.ClientId
                 });
 
-                return new CommonRequestDto { PremiumCashbackIndividualPointsModels = premiumCashbackIndividualPointsData };
+                _result.PremiumCashbackIndividualPointsModels = _premiumCashbackIndividualPointsData;
             });
         }
     }

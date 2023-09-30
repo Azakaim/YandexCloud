@@ -6,17 +6,20 @@ namespace YandexCloud.CORE.BL.RequestHandlers
 {
     public class MarketingActionCostHandler : BaseRequestHandler
     {
-        public MarketingActionCostHandler(IOzonFullData ozonFullData, IUoW uow) : base(ozonFullData, uow) { }
+        readonly List<OzonMarketingActionCostModel> _ozonMarketingActionData;
+
+        public MarketingActionCostHandler(IOzonFullData ozonFullData) : base(ozonFullData) 
+        {
+            _ozonMarketingActionData = new List<OzonMarketingActionCostModel>();
+        }
 
         protected override string GetOperationType() => "MarketplaceMarketingActionCostOperation";
 
-        protected override async Task<CommonRequestDto> HandleRequest(Operation data)
+        protected override async Task HandleRequest(Operation data)
         {
-            return await Task.Run(() =>
+            await Task.Run(() =>
             {
-                var ozonMarketingActionData = new List<OzonMarketingActionCostModel>();
-
-                ozonMarketingActionData.Add(new OzonMarketingActionCostModel
+                _ozonMarketingActionData.Add(new OzonMarketingActionCostModel
                 {
                     amount = data.amount,
                     date = Convert.ToDateTime(data.operation_date),
@@ -24,7 +27,7 @@ namespace YandexCloud.CORE.BL.RequestHandlers
                     clients_id = _requestDto.ClientId
                 });
 
-                return new CommonRequestDto { OzonMarketingActionCostModels = ozonMarketingActionData };
+                _result.OzonMarketingActionCostModels = _ozonMarketingActionData;
             });
         }
     }
